@@ -59,6 +59,7 @@ public class MainFrame extends Application {
         gameMenu.setLayoutX(80);
         gameMenu.setLayoutY(50);
 
+        System.out.println("git");
         rootGroup = new Group(blue, gameMenu);
 
 
