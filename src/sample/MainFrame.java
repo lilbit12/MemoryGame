@@ -36,7 +36,7 @@ public class MainFrame extends Application {
         gridPane.setBackground(Background.EMPTY);
 
 
-        playBt = new Button("New game");
+        playBt = new Button("New Game");
         highScoreBt = new Button("High score");
         exitBt = new Button("Exit");
         playBt.setMaxWidth(Double.MAX_VALUE);
@@ -60,43 +60,9 @@ public class MainFrame extends Application {
     }
 
     private void openNewWindowFrame() {
-        /*
-        Stage newGameFrame = new Stage();
-        newGameFrame.initOwner(mainFrame);
-        newGameFrame.initModality(Modality.WINDOW_MODAL);
 
-        Label gridSelectLabel = new Label("Wybierz ilosc wierszy");
-        ComboBox<Integer> gridSelect = new ComboBox<>();
-
-        gridSelect.getItems().addAll(3,4);
-        gridSelect.getSelectionModel().selectFirst();
-        Button playBt = new Button("Play");
-        playBt.setMaxWidth(Double.MAX_VALUE);
-
-
-        VBox playMenu = new VBox(gridSelectLabel,gridSelect,playBt);
-        playMenu.setAlignment(Pos.CENTER);
-        playMenu.setSpacing(20);
-
-
-        GridPane gridPane = new GridPane();
-        gridPane.getColumnConstraints().add(new ColumnConstraints(200));
-        gridPane.setBackground(Background.EMPTY);
-        gridPane.setAlignment(Pos.CENTER);
-        gridPane.add(playMenu,0,1);
-
-
-        Scene scene = new Scene(gridPane,300,250,Color.rgb(48, 194, 228));
-
-        // Set position of second window, related to primary window.
-        newGameFrame.setX(mainFrame.getX() + 200);
-        newGameFrame.setY(mainFrame.getY() + 100);
-
-        newGameFrame.setTitle("New Game");
-        newGameFrame.setScene(scene);
-        newGameFrame.show();
-        */
         NewGameFrame newGameFrame = new NewGameFrame(mainFrame);
+
 
     }
 }
