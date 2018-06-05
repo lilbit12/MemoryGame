@@ -53,7 +53,7 @@ public class NewGameFrame {
         newGameFrame.setScene(scene);
         newGameFrame.show();
 
-        playBt.setOnAction(event -> new GameFrame());
+        playBt.setOnAction(event -> new GameFrame(gridSelect.getSelectionModel().getSelectedItem()));
         }
     }
 
