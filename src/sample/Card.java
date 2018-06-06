@@ -18,11 +18,12 @@ public class Card extends Button {
         this.setText(name);
         this.setStyle("-fx-text-fill: transparent; ");
 
-
         this.setOnAction(event -> setStyle("-fx-text-fill: #000000; "));
     }
 
-    public String getName() {
-        return name;
+    public Card(String str){
+        this.name = str;
+        this.setText(name);
     }
+
 }

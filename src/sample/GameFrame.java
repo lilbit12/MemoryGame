@@ -12,48 +12,53 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 
+import java.util.List;
+
 public class GameFrame {
 
     private Integer gridSize;
     private GridPane gridPane;
 
-    public GameFrame(Integer gridSize){
-
+    public GameFrame(Integer gridSize) {
+        Stage newGameFrame = new Stage();
         this.gridSize = gridSize;
 
-        Stage newGameFrame = new Stage();
+
 
         this.gridPane = new GridPane();
-        gridPane.setAlignment(Pos.CENTER);
-        gridPane.setHgap(10);
-        gridPane.setVgap(10);
-        gridPane.setPadding(new Insets(25,25,25,25));
+
+        gridPane.setVgap(20);
+        gridPane.setHgap(20);
 
 
-        /*
-        Card cd1 = new Card();
-        Card cd2 = new Card();
-
-        */
         Deck deck1 = new Deck(gridSize);
-        deck1.setDeck();
-        deck1.printDeck();
 
 
-        generateGrid();
+        int licznik = 0;
+        Card tmp;
+        for (int row = 0; row < gridSize; row++) {
+            for (int column = 0; column < gridSize; column++) {
+                tmp = deck1.getDeck().get(licznik);
+                gridPane.add(tmp, row, column);
+                licznik++;
+            }
 
 
-        Scene scene = new Scene(gridPane,640,480, Color.rgb(48, 194, 228));
-        newGameFrame.setTitle("New Game");
-        newGameFrame.setScene(scene);
-        newGameFrame.show();
-
+            Scene scene = new Scene(gridPane, 740, 640, Color.rgb(48, 194, 228));
+            newGameFrame.setTitle("New Game");
+            newGameFrame.setScene(scene);
+            newGameFrame.show();
+        }
     }
 
-    public void generateGrid(){
-        for (int row = 0; row <= gridSize ; row++) {
-            for (int column = 0; column <= gridSize ; column++) {
-                gridPane.add(new Card(),row,column);
+    public void generateGrid(List<Card> deck){
+        int licznik = 0;
+        Card tmp;
+        for (int row = 0; row < gridSize ; row++) {
+            for (int column = 0; column < gridSize ; column++) {
+                tmp = deck.get(licznik);
+                gridPane.add(tmp,row,column);
+                licznik++;
             }
         }
     }

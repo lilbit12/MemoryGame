@@ -3,6 +3,8 @@ package sample;
 import javafx.collections.ObservableList;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 
@@ -10,47 +12,35 @@ public class Deck {
 
     private List<Card> deck;
     private Integer gridSize;
+    int numberOfPairs;
 
     public Deck(Integer gridSize) {
         this.gridSize = gridSize;
         int capacity = gridSize*gridSize;
-        deck = new ArrayList<>(capacity);
+        deck = new ArrayList<>();
+
+        numberOfPairs = capacity/2;
+
+        generateDeck(numberOfPairs);
     }
 
-    public void setDeck() {
+    public List<Card> getDeck() {
+        return deck;
+    }
+
+    public void generateDeck(int numberOfPairs){
         Card tmp;
-        for (int i = 0; i <= gridSize*gridSize; i++) {
-
-            do{
-                tmp = new Card();
-                deck.add(tmp);
-            }
-            while (isUnique(deck,tmp) && deck.size()<=i);
+        for (int i = 0; i < numberOfPairs ; i++) {
+            tmp = new Card();
+            if (!(deck.contains(tmp))){
                 deck.add(tmp);
                 deck.add(tmp);
             }
         }
-
-
-
-    public void printDeck() {
-        for (int i = 0; i < deck.size(); i++) {
-            System.out.println(deck.get(i).getName());
+        if (gridSize%2==1){
+            deck.add(new Card(":-)"));
         }
+        Collections.shuffle(deck);
     }
 
-    public boolean isUnique(List<Card> existingCards, Card x) {
-        boolean flag = false;
-
-        for (Card card : existingCards) {
-            if (!existingCards.isEmpty()) {
-                if (x.getName().equals(existingCards)) {
-                } else
-                    flag = true;
-            } else {
-                break;
-            }
-        }
-        return flag;
-    }
 }
