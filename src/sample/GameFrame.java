@@ -1,6 +1,8 @@
 package sample;
 
 
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleStringProperty;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
@@ -14,21 +16,25 @@ public class GameFrame {
 
     private Integer gridSize;
     private GridPane gridPane;
-    private Label timeLb;
+    protected Label timeLb;
+    protected MemoryTimer timer;
 
     public GameFrame(Integer gridSize) {
         Stage newGameFrame = new Stage();
         this.gridSize = gridSize;
+        timeLb = new Label();
 
         this.gridPane = new GridPane();
         //gridPane.setBackground(Background.EMPTY);
         gridPane.setHgap(20);
         gridPane.setVgap(20);
         gridPane.setAlignment(Pos.CENTER);
-
+        timeLb = new Label();
 
         Deck deck1 = new Deck(gridSize);
         generateGrid(deck1.getDeck());
+        timer = new MemoryTimer(timeLb);
+
 
 
 
@@ -53,12 +59,6 @@ public class GameFrame {
                 licznik++;
             }
         }
-
-        timeLb = new Label();
-        Time time1 = new Time(timeLb);
-        time1.startTimer(0);
-
-
         gridPane.getChildren().add(timeLb);
         GridPane.setConstraints(timeLb,gridSize/2,gridSize+1);
     }
