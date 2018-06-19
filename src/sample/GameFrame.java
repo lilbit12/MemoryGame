@@ -3,6 +3,7 @@ package sample;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
@@ -16,6 +17,8 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+
+import java.util.Arrays;
 import java.util.List;
 
 public class GameFrame {
@@ -26,6 +29,8 @@ public class GameFrame {
     public Integer seconds = 0;
     public Integer minutes = 0;
     private Timeline timeline;
+    public static List<Card> deck;
+    public static int cardsClicked;
 
 
     public GameFrame(Integer gridSize) {
@@ -64,19 +69,9 @@ public class GameFrame {
         timeline.playFromStart();
 
         Deck deck1 = new Deck(gridSize);
+        deck = deck1.getDeck();
         generateGrid(deck1.getDeck());
-        ObservableList observableList = FXCollections.observableList(deck1.getDeck());
-        observableList.addListener(new ListChangeListener() {
-            @Override
-            public void onChanged(ListChangeListener.Change change) {
-                while (change.next()){
-                    change.wasUpdated();
-                    change.wasPermutated();
-                    System.out.println("Change!");
-                }
 
-            }
-        });
 
         mainPane.setCenter(gridPane);
         mainPane.setBottom(timerLabel);
