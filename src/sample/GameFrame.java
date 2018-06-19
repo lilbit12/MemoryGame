@@ -1,17 +1,12 @@
 package sample;
 
-
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
-import javafx.application.Platform;
 import javafx.beans.property.IntegerProperty;
 import javafx.beans.property.SimpleIntegerProperty;
-import javafx.beans.property.SimpleStringProperty;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
-import javafx.concurrent.Task;
-import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
+import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
+import javafx.collections.ObservableList;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
@@ -21,8 +16,6 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.stage.Stage;
 import javafx.util.Duration;
-
-import javax.swing.*;
 import java.util.List;
 
 public class GameFrame {
@@ -32,12 +25,14 @@ public class GameFrame {
     protected Label timerLabel = new Label();
     public Integer seconds = 0;
     public Integer minutes = 0;
-    public IntegerProperty secondsProp = new SimpleIntegerProperty(seconds);
     private Timeline timeline;
-    private BorderPane timePane = new BorderPane();
+
 
     public GameFrame(Integer gridSize) {
         Stage newGameFrame = new Stage();
+
+        BorderPane mainPane = new BorderPane();
+
         this.gridSize = gridSize;
 
         this.gridPane = new GridPane();
@@ -48,52 +43,49 @@ public class GameFrame {
 
 
         timerLabel.setText(seconds.toString());
-        timerLabel.setTextFill(Color.RED);
+        timerLabel.setTextFill(Color.GREEN);
         timerLabel.setStyle("-fx-font-size: 3em;-fx-font-family: 'sans-serif';");
 
         timeline = new Timeline();
         timeline.setCycleCount(Timeline.INDEFINITE);
         timeline.getKeyFrames().add(
                 new KeyFrame(Duration.seconds(1),
-                        new EventHandler<ActionEvent>() {
-                            @Override
-                            public void handle(ActionEvent event) {
-                                seconds++;
+                        event -> {
+                            seconds++;
+                            timerLabel.setText(minutes.toString()+":"+seconds.toString());
+                            if (seconds>59){
+                                minutes++;
+                                seconds= 0;
                                 timerLabel.setText(minutes.toString()+":"+seconds.toString());
-                                if (seconds>59){
-                                    minutes++;
-                                    seconds= 0;
-                                    timerLabel.setText(minutes.toString()+":"+seconds.toString());
-                                }
-
                             }
+
                         })
         );
         timeline.playFromStart();
 
         Deck deck1 = new Deck(gridSize);
         generateGrid(deck1.getDeck());
-
-
-
-        /*
-        Task time = new Task() {
+        ObservableList observableList = FXCollections.observableList(deck1.getDeck());
+        observableList.addListener(new ListChangeListener() {
             @Override
-            protected Integer call() throws Exception {
-                while (true){
-                    Thread.sleep(1000);
-                    updateTime();
-                    System.out.println(getSeconds());
-                    timeLb.setText(getSeconds());
+            public void onChanged(ListChangeListener.Change change) {
+                while (change.next()){
+                    change.wasUpdated();
+                    change.wasPermutated();
+                    System.out.println("Change!");
                 }
+
             }
-        };
+        });
 
-        new Thread(time).start();
+        mainPane.setCenter(gridPane);
+        mainPane.setBottom(timerLabel);
+        mainPane.setBackground(Background.EMPTY);
+        BorderPane.setAlignment(timerLabel,Pos.BOTTOM_CENTER);
 
-        //timeLb.textProperty().bind(secondsProp.asString());
-        */
-        Scene scene = new Scene(gridPane, 740, 640, Color.rgb(48, 194, 228));
+
+
+        Scene scene = new Scene(mainPane, 640, 480, Color.rgb(48, 194, 228));
         newGameFrame.setTitle("New Game");
         newGameFrame.setScene(scene);
         newGameFrame.show();
@@ -101,13 +93,6 @@ public class GameFrame {
 
         }
 
-        public void  updateTime(){
-        secondsProp.setValue(++seconds);
-        }
-
-        public String getSeconds(){
-            return String.valueOf(seconds);
-        }
 
 
     public void generateGrid(List<Card> deck){
@@ -122,13 +107,5 @@ public class GameFrame {
                 licznik++;
             }
         }
-
-        gridPane.getChildren().add(timerLabel);
-        GridPane.setConstraints(timerLabel,gridSize%2==0?gridSize/2:1,gridSize+3);
-
-
-
-
-
     }
 }
