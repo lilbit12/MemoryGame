@@ -51,6 +51,8 @@ public class MainFrame extends Application {
 
         gridPane.add(gameMenu,0,1);
         Scene scene = new Scene(gridPane,300,300, Color.rgb(48, 194, 228));
+
+        scene.getStylesheets().add(getClass().getResource("buttons.css").toExternalForm());
         primaryStage.setScene(scene);
         primaryStage.show();
 
