@@ -2,11 +2,7 @@ package sample;
 
 
 import javafx.animation.*;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.BackgroundFill;
-import javafx.scene.layout.BackgroundImage;
 import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.scene.layout.StackPane;
@@ -14,16 +10,17 @@ import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
 import javafx.scene.input.MouseEvent;
 
+import java.text.DecimalFormat;
+
 
 public class Card extends StackPane {
-
+    private static DecimalFormat df2 = new DecimalFormat(".##");
     private Text name = new Text();
 
     public Card(String value) {
         this.getStylesheets().add(getClass().getResource("buttons.css").toExternalForm());
         Rectangle border = new Rectangle(60,60);
         border.setFill(null);
-
 
         border.setStroke(Color.BLACK);
         name.setText(value);
@@ -34,20 +31,18 @@ public class Card extends StackPane {
         this.setPrefSize(50,50);
         this.setStyle("-fx-background-color: #fbff92;");
         setOnMouseClicked(this::mouseEventClick);
-
     }
-
-
 
     private boolean isClicked() {
         return name.getOpacity() == 1;
     }
 
-
     public void mouseEventClick(MouseEvent event){
-        if (isClicked() || GameFrame.clicked == 0){
+        if (isClicked() || GameFrame.clicked == 0 || event.getClickCount() >1 ){
             return;
         }
+
+
         GameFrame.clicked--;
 
         if (GameFrame.selected == null){
@@ -58,14 +53,41 @@ public class Card extends StackPane {
                 if (!hasSameValue(GameFrame.selected)){
                     GameFrame.selected.setHide();
                     this.setHide();
-                    notMatchAnimation(GameFrame.selected);
+                    //notMatchAnimation(GameFrame.selected);
                 } else {
                     correctAnimation(GameFrame.selected);
+                    GameFrame.pairsLeft--;
+                    if (GameFrame.pairsLeft==0){
+                        saveResult();
+                    }
+
                 }
                 GameFrame.selected = null;
                 GameFrame.clicked = 2;
             });
         }
+    }
+
+    private void saveResult() {
+
+        GameFrame.timeline.stop();
+        double sec = GameFrame.seconds;
+
+
+        GameFrame.result= ((GameFrame.gridSize*GameFrame.gridSize)/sec);
+
+        String tmp = df2.format(GameFrame.result);
+
+
+        Result resultOB = new Result(GameFrame.gridSize, tmp, GameFrame.seconds);
+        System.out.println(GameFrame.gridSize + " " + GameFrame.seconds);
+
+        System.out.println(GameFrame.result);
+        MainFrame.scores.add(resultOB.getInformation());
+
+        GameFrame.seconds=0;
+        GameFrame.result=0;
+        GameFrame.gridSize=0;
     }
 
     private void notMatchAnimation(Card card) {
@@ -124,13 +146,16 @@ public class Card extends StackPane {
     }
 
     private void openCard(Runnable action) {
+
         FadeTransition ft = new FadeTransition(Duration.seconds(0.5),name);
         ft.setToValue(1);
         ft.setOnFinished(event -> action.run());
+        this.setStyle("-fx-background-color: #516bff;");
         ft.play();
     }
 
     public void setHide(){
+        this.setStyle("-fx-background-color: #fbff92;");
         FadeTransition ft = new FadeTransition(Duration.seconds(0.5),name);
         ft.setToValue(0);
         ft.play();

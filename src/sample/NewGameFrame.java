@@ -25,7 +25,7 @@ public class NewGameFrame {
         Label gridSelectLabel = new Label("Wybierz ilosc wierszy");
         ComboBox<Integer> gridSelect = new ComboBox<>();
 
-        gridSelect.getItems().addAll(3,4);
+        gridSelect.getItems().addAll(3,4,6,8);
         gridSelect.getSelectionModel().selectFirst();
         Button playBt = new Button("Play");
         playBt.setMaxWidth(Double.MAX_VALUE);

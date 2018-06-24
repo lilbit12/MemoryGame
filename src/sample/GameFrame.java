@@ -15,18 +15,16 @@ import java.util.List;
 
 public class GameFrame {
 
-    private Integer gridSize;
-    private GridPane gridPane;
+    public static Integer gridSize;
+    public GridPane gridPane;
     protected Label timerLabel = new Label();
-    public Integer seconds = 0;
-    public Integer minutes = 0;
-    private Timeline timeline;
+    public static Integer seconds = 0;
+    public static Timeline timeline;
     public static List<Card> deck;
     public static int clicked = 2;
     public static Card selected = null;
-
-
-
+    public static int pairsLeft;
+    public static double result;
 
 
 
@@ -37,17 +35,20 @@ public class GameFrame {
 
         this.gridSize = gridSize;
 
+        pairsLeft=(gridSize*gridSize)/2;
+        System.out.println(pairsLeft);
+
         this.gridPane = new GridPane();
         gridPane.setBackground(Background.EMPTY);
 
-        gridPane.setHgap(10);
-        gridPane.setVgap(10);
+        gridPane.setHgap(5);
+        gridPane.setVgap(5);
 
         gridPane.setAlignment(Pos.CENTER);
 
         timerLabel.setText(seconds.toString());
         timerLabel.setTextFill(Color.GREEN);
-        timerLabel.setStyle("-fx-font-size: 2em;-fx-font-family: 'sans-serif';");
+        timerLabel.setStyle("-fx-font-size: 2em;-fx-font-family: 'Arial Narrow'");
 
         timeline = new Timeline();
         timeline.setCycleCount(Timeline.INDEFINITE);
@@ -55,15 +56,8 @@ public class GameFrame {
                 new KeyFrame(Duration.seconds(1),
                         event -> {
                             seconds++;
-                            timerLabel.setText(minutes.toString()+":"+seconds.toString());
-                            if (seconds>59){
-                                minutes++;
-                                seconds= 0;
-                                timerLabel.setText(minutes.toString()+":"+seconds.toString());
-                            }
-
-                        })
-        );
+                            timerLabel.setText(seconds.toString());
+                            }));
         timeline.playFromStart();
 
         Deck deck1 = new Deck(gridSize);
@@ -76,13 +70,16 @@ public class GameFrame {
         mainPane.setBackground(Background.EMPTY);
         BorderPane.setAlignment(timerLabel,Pos.BOTTOM_CENTER);
 
-
-        Scene scene = new Scene(mainPane, 640, 480, Color.rgb(48, 194, 228));
+        Scene scene = new Scene(mainPane, 640, 480, Color.rgb(186,191,195));
         newGameFrame.setTitle("New Game");
         newGameFrame.setScene(scene);
         newGameFrame.show();
         scene.getStylesheets().add(getClass().getResource("buttons.css").toExternalForm());
 
+        newGameFrame.setOnCloseRequest( event -> {
+            timeline.stop();
+            GameFrame.seconds=0;
+        });
         }
 
     public void generateGrid(List<Card> deck){

@@ -1,11 +1,17 @@
 package sample;
 
 import javafx.application.Application;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.event.EventHandler;
 import javafx.geometry.Pos;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.stage.Modality;
@@ -14,11 +20,12 @@ import javafx.stage.Stage;
 
 public class MainFrame extends Application {
 
-
     private Stage mainFrame;
     private Button playBt;
     private Button highScoreBt;
     private Button exitBt;
+    public static ObservableList<String> scores = FXCollections.observableArrayList();
+
 
     public static void main(String[] args){
         launch(args);
@@ -44,6 +51,11 @@ public class MainFrame extends Application {
         exitBt.setMaxWidth(Double.MAX_VALUE);
 
 
+        highScoreBt.setOnMouseClicked(event -> {
+            showScores(primaryStage);
+        });
+
+
         VBox gameMenu = new VBox(playBt,highScoreBt,exitBt);
         gameMenu.setAlignment(Pos.CENTER);
         gameMenu.setSpacing(20);
@@ -58,6 +70,41 @@ public class MainFrame extends Application {
 
 
         playBt.setOnAction(event -> openNewWindowFrame());
+
+    }
+
+    private void showScores(Stage root) {
+
+        Stage highScoreStage = new Stage();
+        highScoreStage.initOwner(root);
+        highScoreStage.initModality(Modality.WINDOW_MODAL);
+
+        BorderPane borderPane = new BorderPane();
+        borderPane.setPrefSize(300,400);
+
+
+
+        ListView<String> scoresLV = new ListView<>(scores);
+        Button checkButton = new Button(" > ");
+
+        borderPane.setCenter(scoresLV);
+        borderPane.setBottom(checkButton);
+        checkButton.setOnMouseClicked(event -> {
+            scores.add("Radek (Time: 3:40, grid 4x4)");
+        });
+
+
+        Scene scene = new Scene(borderPane,300,250);
+
+        highScoreStage.setTitle("High scores");
+        highScoreStage.setScene(scene);
+        highScoreStage.show();
+
+        // Set position of second window, related to primary window.
+        highScoreStage.setX(root.getX() -400);
+        highScoreStage.setY(root.getY() +100);
+
+
 
     }
 
