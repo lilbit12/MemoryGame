@@ -18,7 +18,7 @@ public class Result implements Serializable {
     private String name;
 
     public String getInformation(){
-        return name + " (Time: " + time +", grid " + gridSize + "x" + gridSize +" points" + points +")";
+        return name + " (Time: " + time +", grid " + gridSize + "x" + gridSize +" points-" + points +")";
     }
 
 }

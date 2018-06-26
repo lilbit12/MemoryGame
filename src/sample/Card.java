@@ -1,14 +1,11 @@
 package sample;
 
-
-import com.sun.org.apache.regexp.internal.RE;
 import javafx.animation.*;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
@@ -18,13 +15,11 @@ import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import javafx.scene.input.MouseEvent;
-import sun.applet.Main;
 
-import java.text.DecimalFormat;
 
 
 public class Card extends StackPane {
-    private static DecimalFormat df2 = new DecimalFormat(".##");
+
     private Text name = new Text();
 
     public Card(String value) {
@@ -62,7 +57,7 @@ public class Card extends StackPane {
                 if (!hasSameValue(GameFrame.selected)){
                     GameFrame.selected.setHide();
                     this.setHide();
-                    //notMatchAnimation(GameFrame.selected);
+
                 } else {
                     correctAnimation(GameFrame.selected);
                     GameFrame.pairsLeft--;
@@ -91,31 +86,28 @@ public class Card extends StackPane {
         gridPane.add(name,0,1);
         gridPane.add(okBtn,0,2);
 
-
-        Scene inputScene = new Scene(gridPane,50,100);
+        Scene inputScene = new Scene(gridPane,250,150);
         inputStage.setScene(inputScene);
 
         inputStage.show();
 
-
-
         GameFrame.timeline.stop();
         double sec = GameFrame.seconds;
 
-
         GameFrame.result= ((GameFrame.gridSize*GameFrame.gridSize)/sec);
 
-        String tmp = df2.format(GameFrame.result);
 
 
+        double roundOff = Math.round(GameFrame.result*100.0) / 100.0;
 
         System.out.println(GameFrame.gridSize + " " + GameFrame.seconds);
 
 
         System.out.println(GameFrame.result);
+        System.out.println(roundOff);
 
         okBtn.setOnAction(event -> {
-            Result result = new Result(name.getText(),GameFrame.gridSize,tmp,GameFrame.seconds);
+            Result result = new Result(name.getText(),GameFrame.gridSize,String.valueOf(roundOff),GameFrame.seconds);
             MainFrame.scores.add(result.getInformation());
             GameFrame.seconds=0;
             GameFrame.result=0;
@@ -156,20 +148,17 @@ public class Card extends StackPane {
 
         FadeTransition ft = new FadeTransition(Duration.seconds(0.5), name);
         ft.setToValue(1);
-        ft.setOnFinished(event -> action.run());
+        ft.setOnFinished(event -> {
+            this.setMouseTransparent(false);
+            action.run();
+        });
+        this.setStyle("-fx-background-color: #494CC2;");
 
-        this.setStyle("-fx-background-color: #516bff;");
 
-        boolean flag = true;
         ft.play();
+        this.setMouseTransparent(true);
 
-        while (flag){
-            if (ft.getStatus() == Animation.Status.RUNNING){
-                this.setMouseTransparent(true);
-            } else {
-                flag = false;
-            }
-        }
+
 
 
 

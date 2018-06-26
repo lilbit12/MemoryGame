@@ -3,15 +3,19 @@ package sample;
 import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.EventType;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
+import javafx.scene.control.ScrollBar;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
+import java.awt.event.MouseEvent;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -36,6 +40,8 @@ public class MainFrame extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
 
+
+
         mainFrame = primaryStage;
         primaryStage.setTitle("Memory game");
 
@@ -47,6 +53,7 @@ public class MainFrame extends Application {
         gridPane.setBackground(Background.EMPTY);
 
 
+        Label id = new Label("s17430");
         playBt = new Button("New Game");
         highScoreBt = new Button("High score");
         exitBt = new Button("Exit");
@@ -56,11 +63,15 @@ public class MainFrame extends Application {
 
 
         highScoreBt.setOnMouseClicked(event -> {
+            String tmp = "points";
+            scores.sort(Comparator
+                            .comparing(s -> s.toString().indexOf(tmp,6)) .thenComparing( s -> s.toString().indexOf(tmp,8), Comparator.reverseOrder()));
+
             showScores(primaryStage);
         });
 
 
-        VBox gameMenu = new VBox(playBt,highScoreBt,exitBt);
+        VBox gameMenu = new VBox(id,playBt,highScoreBt,exitBt);
         gameMenu.setAlignment(Pos.CENTER);
         gameMenu.setSpacing(20);
 
@@ -123,12 +134,27 @@ public class MainFrame extends Application {
 
         BorderPane borderPane = new BorderPane();
         borderPane.setPrefSize(300,400);
+        Button addEntry = new Button("Test");
+        Button removeEntry = new Button("Remove selected");
+        GridPane gridPane = new GridPane();
 
 
 
         ListView<String> scoresLV = new ListView<>(scores);
 
+
+        borderPane.setBottom(gridPane);
         borderPane.setCenter(scoresLV);
+
+        gridPane.add(addEntry,0,0);
+        gridPane.add(removeEntry,1,0);
+
+        addEntry.setOnMouseClicked(event -> MainFrame.scores.add("radek     d   sadass  d    asd     asdads     asd"));
+
+        removeEntry.setOnMouseClicked( event -> {
+            String tmp = scoresLV.getSelectionModel().getSelectedItem();
+            scores.remove(tmp);
+        });
 
         Scene scene = new Scene(borderPane,300,250);
 

@@ -1,10 +1,16 @@
 package sample;
 
 import javafx.animation.KeyFrame;
+import javafx.animation.KeyValue;
 import javafx.animation.Timeline;
+import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyCodeCombination;
+import javafx.scene.input.KeyCombination;
+import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
@@ -29,7 +35,13 @@ public class GameFrame {
 
 
     public GameFrame(Integer gridSize) {
+
+
         Stage newGameFrame = new Stage();
+
+        KeyCombination kc = new KeyCodeCombination(KeyCode.Q, KeyCombination.SHIFT_ANY);
+
+
 
         BorderPane mainPane = new BorderPane();
 
@@ -47,7 +59,7 @@ public class GameFrame {
         gridPane.setAlignment(Pos.CENTER);
 
         timerLabel.setText(seconds.toString());
-        timerLabel.setTextFill(Color.GREEN);
+        timerLabel.setTextFill(Color.rgb(12,56,12));
         timerLabel.setStyle("-fx-font-size: 2em;-fx-font-family: 'Arial Narrow'");
 
         timeline = new Timeline();
@@ -80,6 +92,13 @@ public class GameFrame {
             timeline.stop();
             GameFrame.seconds=0;
         });
+        Runnable rn = ()-> {
+            timeline.stop();
+            seconds =0;
+            newGameFrame.close();
+        };
+        scene.getAccelerators().put(kc,rn);
+
         }
 
     public void generateGrid(List<Card> deck){
