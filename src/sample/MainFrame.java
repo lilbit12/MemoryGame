@@ -3,23 +3,25 @@ package sample;
 import javafx.application.Application;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.EventHandler;
 import javafx.geometry.Pos;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
+import java.io.*;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.List;
+
 
 public class MainFrame extends Application {
 
+    private final String fileName = "scores.obj";
     private Stage mainFrame;
     private Button playBt;
     private Button highScoreBt;
@@ -36,6 +38,8 @@ public class MainFrame extends Application {
 
         mainFrame = primaryStage;
         primaryStage.setTitle("Memory game");
+
+        loadScores();
 
         GridPane gridPane = new GridPane();
         gridPane.setAlignment(Pos.CENTER);
@@ -71,6 +75,44 @@ public class MainFrame extends Application {
 
         playBt.setOnAction(event -> openNewWindowFrame());
 
+        mainFrame.setOnCloseRequest(e -> closeProgram());
+
+        exitBt.setOnAction( e -> closeProgram());
+
+    }
+
+    private void loadScores() {
+        try (FileInputStream fis = new FileInputStream(fileName);
+             ObjectInputStream ois = new ObjectInputStream(fis);
+        ){
+            List<String> score =(ArrayList<String>) ois.readObject();
+            scores = FXCollections.observableArrayList(score);
+
+
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+            System.out.println("Nie znaleziono pliku scores.obj");
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+
+        System.out.println("Załadowanoa plik scores.obj");
+    }
+
+    private void closeProgram() {
+        try (FileOutputStream fs = new FileOutputStream("scores.obj");
+             ObjectOutputStream os = new ObjectOutputStream(fs)) {
+
+            List<String> scoresTMP = new ArrayList<>(scores);
+            os.writeObject(scoresTMP);
+
+        } catch (Exception ex){
+            ex.printStackTrace();
+        }
+        System.out.println("Zapisano do pliku");
+        mainFrame.close();
     }
 
     private void showScores(Stage root) {
@@ -85,14 +127,8 @@ public class MainFrame extends Application {
 
 
         ListView<String> scoresLV = new ListView<>(scores);
-        Button checkButton = new Button(" > ");
 
         borderPane.setCenter(scoresLV);
-        borderPane.setBottom(checkButton);
-        checkButton.setOnMouseClicked(event -> {
-            scores.add("Radek (Time: 3:40, grid 4x4)");
-        });
-
 
         Scene scene = new Scene(borderPane,300,250);
 

@@ -1,14 +1,24 @@
 package sample;
 
 
+import com.sun.org.apache.regexp.internal.RE;
 import javafx.animation.*;
+import javafx.geometry.Pos;
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.GridPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Rectangle;
+import javafx.stage.Stage;
 import javafx.util.Duration;
 import javafx.scene.input.MouseEvent;
+import sun.applet.Main;
 
 import java.text.DecimalFormat;
 
@@ -38,10 +48,9 @@ public class Card extends StackPane {
     }
 
     public void mouseEventClick(MouseEvent event){
-        if (isClicked() || GameFrame.clicked == 0 || event.getClickCount() >1 ){
+        if (isClicked() || GameFrame.clicked == 0){
             return;
         }
-
 
         GameFrame.clicked--;
 
@@ -70,6 +79,26 @@ public class Card extends StackPane {
 
     private void saveResult() {
 
+        Stage inputStage = new Stage();
+        GridPane gridPane = new GridPane();
+        gridPane.setAlignment(Pos.CENTER);
+        gridPane.setVgap(10);
+
+        TextField name = new TextField();
+        Label inoLb = new Label("Wprowadź imię:");
+        Button okBtn = new Button("Ok");
+        gridPane.add(inoLb,0,0);
+        gridPane.add(name,0,1);
+        gridPane.add(okBtn,0,2);
+
+
+        Scene inputScene = new Scene(gridPane,50,100);
+        inputStage.setScene(inputScene);
+
+        inputStage.show();
+
+
+
         GameFrame.timeline.stop();
         double sec = GameFrame.seconds;
 
@@ -79,43 +108,20 @@ public class Card extends StackPane {
         String tmp = df2.format(GameFrame.result);
 
 
-        Result resultOB = new Result(GameFrame.gridSize, tmp, GameFrame.seconds);
+
         System.out.println(GameFrame.gridSize + " " + GameFrame.seconds);
 
+
         System.out.println(GameFrame.result);
-        MainFrame.scores.add(resultOB.getInformation());
 
-        GameFrame.seconds=0;
-        GameFrame.result=0;
-        GameFrame.gridSize=0;
-    }
-
-    private void notMatchAnimation(Card card) {
-        RotateTransition rt = new RotateTransition(Duration.millis(100),card);
-        RotateTransition rt2 = new RotateTransition(Duration.millis(100),this);
-
-        ScaleTransition st = new ScaleTransition(Duration.millis(100),this);
-        st.setByX(1.0f);
-        st.setByY(1.5f);
-        st.setCycleCount(2);
-        st.setAutoReverse(true);
-
-        ScaleTransition st2 = new ScaleTransition(Duration.millis(100),card);
-        st2.setByX(1.0f);
-        st2.setByY(1.5f);
-        st2.setCycleCount(2);
-        st2.setAutoReverse(true);
-
-        rt.setByAngle(100);
-        rt.setCycleCount(2);
-        rt.setAutoReverse(true);
-        rt2.setByAngle(100);
-        rt2.setCycleCount(2);
-        rt2.setAutoReverse(true);
-
-
-        ParallelTransition pt = new ParallelTransition(rt,rt2,st,st2);
-        pt.play();
+        okBtn.setOnAction(event -> {
+            Result result = new Result(name.getText(),GameFrame.gridSize,tmp,GameFrame.seconds);
+            MainFrame.scores.add(result.getInformation());
+            GameFrame.seconds=0;
+            GameFrame.result=0;
+            GameFrame.gridSize=0;
+            inputStage.close();
+        });
     }
 
     private void correctAnimation(Card card) {
@@ -138,7 +144,6 @@ public class Card extends StackPane {
         ParallelTransition pt = new ParallelTransition(sT,sT2);
         pt.play();
 
-
     }
 
     private boolean hasSameValue(Card other) {
@@ -147,11 +152,30 @@ public class Card extends StackPane {
 
     private void openCard(Runnable action) {
 
-        FadeTransition ft = new FadeTransition(Duration.seconds(0.5),name);
+
+
+        FadeTransition ft = new FadeTransition(Duration.seconds(0.5), name);
         ft.setToValue(1);
         ft.setOnFinished(event -> action.run());
+
         this.setStyle("-fx-background-color: #516bff;");
+
+        boolean flag = true;
         ft.play();
+
+        while (flag){
+            if (ft.getStatus() == Animation.Status.RUNNING){
+                this.setMouseTransparent(true);
+            } else {
+                flag = false;
+            }
+        }
+
+
+
+
+
+
     }
 
     public void setHide(){
@@ -159,5 +183,10 @@ public class Card extends StackPane {
         FadeTransition ft = new FadeTransition(Duration.seconds(0.5),name);
         ft.setToValue(0);
         ft.play();
+    }
+
+    @Override
+    public String toString() {
+        return name.getText();
     }
 }

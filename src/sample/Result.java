@@ -1,13 +1,16 @@
 package sample;
 
-public class Result {
+import java.io.Serializable;
+
+public class Result implements Serializable {
 
     private int gridSize;
 
-    public Result(int gridSize, String points, int time) {
+    public Result(String name,int gridSize, String points, int time) {
         this.gridSize = gridSize;
         this.points = points;
         this.time = time;
+        this.name = name;
     }
 
     private String points;
@@ -15,6 +18,7 @@ public class Result {
     private String name;
 
     public String getInformation(){
-        return "Radek" + "( Time: " + time +", grid " + gridSize + "x" + gridSize +" points" + points +")";
+        return name + " (Time: " + time +", grid " + gridSize + "x" + gridSize +" points" + points +")";
     }
+
 }
