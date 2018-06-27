@@ -53,7 +53,7 @@ public class MainFrame extends Application {
         gridPane.setBackground(Background.EMPTY);
 
 
-        Label id = new Label("s17430");
+
         playBt = new Button("New Game");
         highScoreBt = new Button("High score");
         exitBt = new Button("Exit");
@@ -71,7 +71,7 @@ public class MainFrame extends Application {
         });
 
 
-        VBox gameMenu = new VBox(id,playBt,highScoreBt,exitBt);
+        VBox gameMenu = new VBox(playBt,highScoreBt,exitBt);
         gameMenu.setAlignment(Pos.CENTER);
         gameMenu.setSpacing(20);
 
